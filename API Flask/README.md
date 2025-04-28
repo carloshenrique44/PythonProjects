@@ -13,16 +13,16 @@ Este foi o meu primeiro projeto de API usando Flask!!
 - GET /filmes
 Retorna todos os filmes listados
 
-GET /filmes/<id>
+- GET /filmes/<id>
 Retorna um filme pelo ID
 
-PUT /filmes/<id>
+- PUT /filmes/<id>
 Edita os dados de um filme específico
 
-POST /filmes
+- POST /filmes
 Adiciona um novo filme. Requer id, título e autor
 
-DELETE /filmes/<id>
+- DELETE /filmes/<id>
 Remove um filme da lista
 
 ⚠️ Observações
