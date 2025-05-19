@@ -1,0 +1,90 @@
+{%load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+
+    
+</head>
+<body>
+    <nav id="navbar" class="flex s-around bg-color">
+        <div class="left-nav">
+            <h2 class="t-white">Portfolio</h2>
+        </div>
+        <div class="right-nav">
+            <li><a href="#home" class="t-white roboto">Home<i class="fa-solid fa-house"></i></a></li>
+            <li><a href="#about" class="t-white roboto">Sobre mim<i class="fa-solid fa-user"></i></a></li>
+            <li><a href="#skills" class="t-white roboto">Habilidades<i class="fa-solid fa-code"></i></a></li>
+            <li><a href="#projects" class="t-white roboto">Projetos<i class="fa-solid fa-project-diagram"></i></a></li>
+            <li><a href="#contact" class="t-white roboto">Contato<i class="fa-solid fa-rocket"></i></a></li>
+        </div>
+    </nav>
+
+    <section id="home" class="flex s-around sw-80 m-auto">
+        <div class="home-left flext items-center">
+            <h6 class="popinss">Olá, eu sou</h6>
+            <h1 class=""t-white>Carlos Trindade</h1>
+            <h4 class="popinss">Software Developer</h4>
+            <a href="{% static 'pdf/django.pdf' %}"  target="_blank">
+                    <button class="btn poppins">Resume</button>
+            </a>
+            <a class="btn live popinss" id="hireme" href="" target="_blank">Vamos conversar</a>
+        </div>
+        <div class="home-right flex s-center items-center">
+            <div class="circle flex s-center itens-center" id="mainimage">
+                <img src="{%static 'images/profile.jpg'%}" alt="picture">
+            </div>
+        </div>
+    </section>
+
+    <section id="about">
+        <h1 class="t center my-2 t-white f-2">Sobre mim<Menu></Menu></h1>
+        <div class="about-container flex s-around">
+            <div class="about-left flex s-center items-center">
+                <img src="{%static 'images/about.jpg'%}" alt="">
+            </div>
+        </div>
+        </h1>
+        <div class="about-right flex">
+            <div class="about-content">
+                <h1 class="t-white m-b-1 popinss">Carlos Trindade</h1>
+                <p class="t-white popinss"></p>
+                <a href="btn" id="hireme" href="">Contrate me</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="skills">
+        <h1 class="t-center my-2 t-white f-2">Habilidades</h1>
+        <div class="services-container flex s-around h-58">
+            <div class="skills-left flex s-center items-center">
+                <img src="{%static 'images/skills.jpg'%}" alt="skills image">
+            </div>
+            <div class="skills-container">
+                <div class="java bar p-relative"><span class="bar-content left t-white">Core java</span>
+                    <span class="bar-content right-skills t-white">98%</span>
+                </div>
+
+                 <div class="html bar p-relative"><span class="bar-content left t-white">HTML</span>
+                    <span class="bar-content right-skills t-white">90%</span>
+                </div>
+
+                 <div class="css bar p-relative"><span class="bar-content left t-white">CSS</span>
+                    <span class="bar-content right-skills t-white">88%</span>
+                </div>
+
+                 <div class="js bar p-relative"><span class="bar-content left t-white">Javascript</span>
+                    <span class="bar-content right-skills t-white">90%</span>
+                </div>
+
+                <div class="sql bar p-relative"><span class="bar-content left t-white">MYSQL</span>
+                    <span class="bar-content right-skills t-white">90%</span>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
