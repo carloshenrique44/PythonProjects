@@ -42,3 +42,10 @@ def atualizar_transacao(transacao_id: int, transacao: schemas.TransacaoCreate, d
     if not transacao_atualizada:
         raise HTTPException(status_code=404, detail="Transação não encontrada")
     return transacao_atualizada
+
+@app.get("/transacoes/total/{tipo}", response_model=schemas.TotalTransacao)
+def calcular_total(tipo: str, db: Session = Depends(get_db)):
+    if tipo not in ["entrada", "saida"]:
+        raise HTTPException(status_code=400, detail="Tipo inválido. Use 'entrada' ou 'saida'.")
+    total = crud.calcular_total(db, tipo)
+    return {"total": total}

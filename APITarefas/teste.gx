@@ -1,0 +1,24 @@
+Event Start
+
+	&tMessAutGat_Value_TX.InviteMessage = '<> para não validar'
+
+	getFlowMessage.Call(&opFrom_SM, &tArv_ID, &sdtGetFlowMessage)
+
+	// Verifica se a mensagem tem motor de IA
+	&sMessAutGatOriginMess_ID = &sdtGetFlowMessage.tMessAut_ID
+	&sMessAutGatOriginMess_Tit_SL = &sdtGetFlowMessage.tMessAut_Tit_SL
+	&sMessAutAsst_ID = &sdtGetFlowMessage.sMessAutAsst_ID
+
+	// Define visibilidade da mensagem auxiliar com base no Motor de IA
+	sMessAutGatOriginMess_Asst_ID.Visible = !&sMessAutAsst_ID.IsEmpty()
+
+	getFlowMessage.Call(&opTo_SM, &tArv_ID, &sdtGetFlowMessage)
+
+	&sMessAutGatDestMess_ID = &sdtGetFlowMessage.tMessAut_ID
+	&sMessAutGatDestMess_Tit_SL = &sdtGetFlowMessage.tMessAut_Tit_SL
+
+	If &TrnMode = TrnMode.Update
+		getFlowLink.Call(&tArv_ID, &tMessAutGat_IdFlw_SM, &sMessAutGatOriginMess_ID, &sMessAutGatDestMess_ID, &sMessAutGatOriginMess_Tit_SL, &sMessAutGatDestMess_Tit_SL, &tMessAutGat_Value_TX)
+	EndIf
+
+EndEvent
