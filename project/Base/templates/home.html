@@ -1,0 +1,164 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Portfólio de Carlos Trindade - Desenvolvedor de Software Full Stack">
+    <title>Carlos Trindade | Portfólio</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+    <script src="{% static 'script.js' %}"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+    <nav id="navbar" class="flex s-around bg-color">
+        <div class="left-nav">
+            <h2 class="t-white">Meu Portfolio</h2>
+        </div>
+        <div class="right-nav">
+            <ul>
+                <li><a href="#home" class="t-white roboto">Home <i class="fa-solid fa-house"></i></a></li>
+                <li><a href="#about" class="t-white roboto">Sobre mim <i class="fa-solid fa-user"></i></a></li>
+                <li><a href="#skills" class="t-white roboto">Habilidades <i class="fa-solid fa-wrench"></i></a></li>
+                <li><a href="#projects" class="t-white roboto">Projetos <i class="fa-solid fa-project-diagram"></i></a></li>
+                <li><a href="#contact" class="t-white roboto">Contato <i class="fa-solid fa-rocket"></i></a></li>
+                <li><a href="https://www.linkedin.com/in/carlos-henrique-700560232" class="t-white roboto" target="_blank"><i class="fa-brands fa-linkedin"></i></a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <section id="home" class="flex s-around sw-80 m-auto">
+        <div class="home-left flex items-center">
+            <h6 class="popinss">Olá, eu sou</h6>
+            <h1 class="t-white">Carlos Trindade</h1>
+            <h4 class="popinss">Software Developer</h4>
+            <a href="https://github.com/carloshenrique44" target="_blank">
+                <button class="btn popinss">GitHub</button>
+            </a>
+            <a class="btn live popinss" id="hireme" href="#contact">Vamos conversar</a>
+
+        </div>
+        <div class="home-right flex s-center items-center">
+            <div class="circle flex s-center items-center" id="mainimage">
+                <img src="{% static 'images/profile.jpg' %}" alt="Foto de perfil de Carlos Trindade">
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section bg-dark text-light">
+        <div class="container flex s-around items-center">
+            <div class="about-text">
+                <h2 class="section-title">Sobre mim</h2>
+                <p class="section-description">
+                    Sou Desenvolvedor/Analista de Sistemas cursando Análise e Desenvolvimento de Sistemas na Universidade Santa Cruz 🏛️. Tenho experiência com infraestrutura de TI e tecnologias como <strong>HTML, CSS, JavaScript, React, Node.js, SQL Server, Python, Oracle SQL, PostgreSQL</strong> e <strong>GeneXus</strong>. Proativo, focado em entregar soluções eficazes para desafios complexos.
+                </p>
+            </div>
+            <div class="about-image">
+                <img src="{% static 'images/about.jpg' %}" alt="Carlos Trindade trabalhando" class="profile-img">
+            </div>
+        </div>
+    </section>
+
+    <section id="skills" class="section bg-gradient text-light">
+        <div class="container">
+            <h2 class="section-title">🛠️ Habilidades</h2>
+            <div class="skills-grid">
+                <div class="skill-bar"><span>Front-End</span><div class="bar"><div class="fill fill-90"></div></div></div>
+                <div class="skill-bar"><span>FastAPI</span><div class="bar"><div class="fill fill-75"></div></div></div>
+                <div class="skill-bar"><span>Django</span><div class="bar"><div class="fill fill-70"></div></div></div>
+                <div class="skill-bar"><span>Flask</span><div class="bar"><div class="fill fill-85"></div></div></div>
+                <div class="skill-bar"><span>Selenium</span><div class="bar"><div class="fill fill-40"></div></div></div>
+                <div class="skill-bar"><span>SQL</span><div class="bar"><div class="fill fill-70"></div></div></div>
+                <div class="skill-bar"><span>GeneXus</span><div class="bar"><div class="fill fill-60"></div></div></div>
+                <div class="skill-bar"><span>Power BI</span><div class="bar"><div class="fill fill-10"></div></div></div>
+            </div>
+        </div>
+    </section>
+
+   <section id="projects">
+  <h1 class="t-center my-2 t-white f-2">Principais Projetos</h1>
+  <div class="carousel-wrapper">
+    
+    <div class="projects-carousel" id="projectsCarousel">
+      
+      <div class="project-card">
+        <h1 class="t-white poppins">API Autenticação com Flask e JWT</h1>
+        <p class="t-white poppins">
+          Projeto de API REST desenvolvida com Flask, utilizando autenticação JWT e banco de dados SQLite via SQLAlchemy. Conta com rotas protegidas, geração de tokens e um fluxo básico de login. Ideal como base para sistemas seguros e escaláveis.
+        </p>
+        <div class="buttons flex s-around">
+          <a href="https://github.com/carloshenrique44/PythonProjects/tree/main/APIAutentica%C3%A7%C3%A3o" class="btngt">GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <h1 class="t-white poppins">API Controle de Finanças</h1>
+        <p class="t-white poppins">
+          API de controle financeiro desenvolvida com FastAPI e SQLAlchemy, com endpoints para criação, leitura, atualização e exclusão de transações. Arquitetura modular com schemas, models e funções CRUD, seguindo boas práticas.
+        </p>
+        <div class="buttons flex s-around">
+          <a href="https://github.com/carloshenrique44/PythonProjects/tree/main/APIFinancaspy/APIFinancaspy" class="btngt">GitHub</a>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <h1 class="t-white poppins">Automação com Selenium + Excel</h1>
+        <p class="t-white poppins">
+          Script de automação que integra dados de uma planilha Excel com um site de consulta de CPF, utilizando Selenium e OpenPyXL. O robô faz a leitura e verificação dos dados, classificando pagamentos como "em dia" ou "pendente", e gera um relatório automático.
+        </p>
+        <div class="buttons flex s-around">
+          <a href="https://github.com/carloshenrique44/PythonProjects/tree/main/ConsultaCPFPython" class="btngt">GitHub</a>
+        </div>
+      </div>
+      
+
+    </div>
+    
+  </div>
+</section>
+
+
+
+    <section id="contact" class="m-b-1">
+        <h1 class="t-center my-2 t-white f-2">Entre em Contato</h1>
+        <div class="Contact-container flex s-around items-center">
+            <div class="form" id="contactform">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="name form-div">
+                        <input type="text" name="name" id="name" class="popinss" placeholder="Insira seu Nome">
+                    </div>
+                    <div class="email form-div">
+                        <input type="email" name="email" class="popinss" placeholder="Insira seu Email" required>
+                    </div>
+                    <div class="phone form-div">
+                        <input type="tel" name="number" class="popinss" placeholder="Insira seu Telefone" required>
+                    </div>
+                    <div class="textarea form-div">
+                        <textarea name="content" id="textarea" cols="30" rows="10" class="popinss" placeholder="Insira sua Mensagem"></textarea>
+                    </div>
+                    <button type="submit" class="btn popinss" id="submit">Enviar</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer id="footer">
+        <ul class="flex s-center w-80 m-auto my-2 res">
+            <li><a href="#home" class="popinss">Home</a></li>
+            <li><a href="#about" class="popinss">Sobre mim</a></li>
+            <li><a href="#skills" class="popinss">Habilidades</a></li>
+            <li><a href="#projects" class="popinss">Projetos</a></li>
+            <li><a href="#home" class="popinss">Início</a></li>
+        </ul>
+        <ul class="flex s-center w-80 font-awesome">
+            <a href="https://www.linkedin.com/in/carlos-henrique-700560232" target="_blank"><li><i class="fa-brands fa-linkedin-in"></i></li></a>
+            <a href="https://github.com/carloshenrique44" target="_blank"><li><i class="fa-brands fa-github"></i></li></a>
+            <a href="https://www.instagram.com/caarlostrindade/" target="_blank"><li><i class="fa-brands fa-instagram"></i></li></a>
+        </ul>
+        <p class="t-center my-2 popinss">&copy; Todos direitos reservados  -<span class="cpy-white popinss">E</span></p>
+    </footer>
+
+</body>
+</html>
