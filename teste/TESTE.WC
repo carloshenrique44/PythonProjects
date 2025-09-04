@@ -1,0 +1,378 @@
+
+Event Start
+
+	prcGetMainSession.Call(&sdtUserSession)
+
+	&PageSize_AN = 10
+	&PageNumber_AN = 1
+
+	Do 'FillMessages'
+
+	&sdtChatConfig = New()
+	For Each tConv
+		Where tConv_ID = &sIntConv_ID
+
+		&sConvSetr_ID = sConvSetr_ID
+		&sdtChatConfig.tConv_ID = tConv_ID
+		&sdtChatConfig.tConv_Prot_SL = Format(!'%1 - <b>%2</b>', tConv_Prot_SL, sConvSetr_Nm_SL)
+		&sdtChatConfig.PhoneWithoutMask = setMask.Udp(CK_TpMscr.Celular, '', sConvCtto_Unique_Key_SL.Replace(!'55', ''))
+		&sdtChatConfig.tUsua_ID = &sdtUserSession.tUsua_ID
+		&sdtChatConfig.tConv_Stats_CK = tConv_Stats_CK
+
+		&sConvCtto_ConfServ_ID = sConvCtto_ConfServ_ID
+
+		For Each tConfServ
+			Where tConfServ_ID = &sConvCtto_ConfServ_ID
+
+			&sConfServPesq_ID = sConfServPesq_ID
+
+			Exit
+		EndFor
+
+
+		Exit
+	EndFor
+
+    Do 'GetMessagesCount'
+
+	&scrollToBottom_BL = True
+
+	Do 'RenderMessages'
+
+EndEvent
+
+Event EOChatControl.getValue
+
+	&ContentMessage_TX.setEmpty()
+	&ContentMessage_TX = EOChatControl.value
+
+EndEvent
+
+Event EOChatControl.onSendMessage
+
+	do 'SendMessage'
+
+EndEvent
+
+Event EOChatControl.endConversation
+
+	If prcValidateConversationClosure(&sIntConv_ID)
+
+		&sdtEndConversation = New()
+		&sdtEndConversation.tConv_ID = &sIntConv_ID
+		prcEndConversation.Call(&sdtEndConversation)
+
+		GlobalEvents.RefreshConversation(&tConfServ_ID)
+
+		GlobalEvents.RefreshChat('Refresh')
+	Else
+
+		Msg(!'Adicione pelo menos uma tag para encerrar esse atendimento.')
+	EndIf
+
+EndEvent
+
+Event EOChatControl.endWithSurvey
+
+    If prcValidateConversationClosure(&sIntConv_ID)
+
+        &sdtEndConversation = New()
+        &sdtEndConversation.tConv_ID = &sIntConv_ID
+        prcEndConversation.Call(&sdtEndConversation)
+
+        GlobalEvents.RefreshConversation(&tConfServ_ID)
+        GlobalEvents.RefreshChat('Refresh')
+
+
+//		prcCreateSurveyReturn.Call(&tPesq_ID, &tConv_ID, &Error_SX)
+	 If &Error_SX.IsEmpty()
+		&sdtReplyMessage = New()
+		&sdtReplyMessage.ContentMessage_TX = PesquisaDigital.Link(&sConfServPesq_ID, &sIntConv_ID)
+		&ContentMessage_TX = &sdtReplyMessage.ToJson()
+		Do 'SendMessage' 
+    Else
+        Msg(!"Adicione pelo menos uma tag para encerrar esse atendimento.")
+    EndIf
+Endif
+
+EndEvent
+
+Event EOChatControl.downloadPDF
+
+	AblNewWindow1.OpenWindow(rptConversation.Link(Encrypt64(&sIntConv_ID,Constantes.CryptoKey)))
+
+EndEvent
+
+Event EOChatControl.returnToTheQueue
+
+	&sdtHistMoviConv 						= New()
+	&sdtHistMoviConv.sHistMoviConv_ID 		= &sIntConv_ID
+	&sdtHistMoviConv.sHistMoviConvUsua_ID	= getLoggedUserID()
+	&OldResponsible_SL 						= Find(sConvUsuas_Nome_SL, tConv_ID = &sIntConv_ID)
+	&sdtHistMoviConv.tHistMoviConv_Tp_CK 	= Omnichannel.CK_MovementType.RetornoFila
+	&sdtHistMoviConv.tHistMoviConv_Dtal_SX 	= Format(!'Atendimento transferido novamente para a fila %1 - Antigo responsável: %2', sConvSetr_Nm_SL, IIF(&OldResponsible_SL.IsEmpty(), !'Nenhum', &OldResponsible_SL))
+
+	//remove actual user
+	&sdtMaintainConversation = New()
+	&sdtMaintainConversation.tConv_ID = &sIntConv_ID
+	&sdtMaintainConversation.sConvSetr_ID = &sConvSetr_ID
+	prcChangeUserAndSectorFromConversation.Call(&sdtMaintainConversation)
+
+	//send to queue
+	&sdtMaintainQueueInput = New()
+	&sdtMaintainQueueInput.sFilaConv_ID = &sIntConv_ID
+	&sdtMaintainQueueInput.sFilaSetr_ID = &sConvSetr_ID
+	prcMaintainQueue.Call(&sdtMaintainQueueInput, &tFila_ID)
+
+	prcRegisterConversationMovement(&sdtHistMoviConv)
+
+	GlobalEvents.RefreshConversation(&tConfServ_ID)
+
+	GlobalEvents.RefreshChat('Refresh')
+
+EndEvent
+
+Event GlobalEvents.ChatMessage(&NotificationInfo)
+
+ 	&sdtReceiveMessage = New()
+	&sdtReceiveMessage.FromJson(&NotificationInfo.Message)
+
+	Do 'receiveMessage'
+
+EndEvent
+
+Event EOChatControl.uploadFile
+
+	&sdtFileChat = New()
+	&sdtFileChat.FromJson(EOChatControl.value)
+
+	GlobalEvents.EOChatControlValueReturn()
+
+EndEvent
+
+Event EOChatControl.transferToUser
+
+	wpTransferConversation.popup(&sIntConv_ID)
+
+EndEvent
+
+Event EOChatControl.standBy
+
+	getConversationStandBy.Call(&sIntConv_ID, &StandBy_BL)
+
+	If &StandBy_BL
+		&sdtRemoveConversationStandBy = New()
+		&sdtRemoveConversationStandBy.tConv_ID = &sIntConv_ID
+		prcRemoveConversationStandBy.Call(&sdtRemoveConversationStandBy, True)
+
+		msg(!"Conversa retirada do Stand-by")
+	Else
+		prcSetConversationStandBy.Call(&sIntConv_ID)
+
+		msg(!"Conversa colocada em Stand-by")
+	EndIf
+
+	GlobalEvents.loadConversation(&tConfServ_ID, &sIntConv_ID)
+
+EndEvent
+
+Event EOChatControl.getPageValue
+
+	&PageNumber_AN = EOChatControl.pageIndex
+
+EndEvent
+
+Event EOChatControl.setPageValue
+
+	EOChatControl.pageIndex = &PageNumber_AN
+
+EndEvent
+
+Event GlobalEvents.EOChatControlValueReturn
+
+	Do 'SendFile'
+
+EndEvent
+
+Event EOChatControl.backPage
+
+	Do 'PreviousPage'
+
+EndEvent
+
+Sub 'receiveMessage'
+
+	If &sdtReceiveMessage.tConv_ID = &sIntConv_ID
+		If Not &sdtReceiveMessage.tInt_Stats_CK.IsEmpty()
+			//Atualiza status
+			ucChat.changeStatus(&sdtReceiveMessage.tInt_ID, &sdtReceiveMessage.tInt_Stats_CK)
+		Else
+			getMessageInteraction.Call(&sdtReceiveMessage.tInt_ID, &sdtMessage)
+
+			If &sdtMessage.Count > 0
+				ucChat.receiveMessage(&sdtMessage.Item(1).ToJson())
+
+				If &PageNumber_AN <= 1
+					ucChat.scrollToBottom()
+				EndIf
+
+			EndIf
+
+			prcSetMessageInteractionRead.Call(&sIntConv_ID, &Success_BL)
+
+			If &Success_BL
+				GlobalEvents.loadConversation(&tConfServ_ID, &sIntConv_ID)
+			EndIf
+		EndIf
+	EndIf
+
+EndSub
+
+Sub 'SendMessage'
+
+	prcgravarlog.Call('&ContentMessage_TX:'+&ContentMessage_TX)
+
+	&sdtMaintainInteraction = New()
+	&sdtReplyMessage.FromJson(&ContentMessage_TX)
+	&sdtMaintainInteraction.tInt_Content_TX = &sdtReplyMessage.ContentMessage_TX
+
+	&sdtMaintainInteraction.sIntConv_ID	     = &sIntConv_ID
+	&sdtMaintainInteraction.sIntConfServ_ID  = &tConfServ_ID
+	&sdtMaintainInteraction.sIntUsua_ID      = &tUsua_ID
+	&sdtMaintainInteraction.tInt_Ck_TypeInt  = Ck_TypeInt.text
+
+	If Not &sdtReplyMessage.tInt_reply_ID.IsEmpty()
+    	&sdtMaintainInteraction.tInt_reply_ID = &sdtReplyMessage.tInt_reply_ID
+	Else
+		&sdtMaintainInteraction.tInt_reply_ID = 0
+	EndIf
+
+	prcMaintainAndSendMessage.Call(&sdtMaintainInteraction, &sdtMaintainInteractionResponse)
+
+	ucChat.renderSentMessage(&sdtMaintainInteractionResponse.tInt_ID, &ContentMessage_TX)
+	ucChat.scrollToBottom()
+
+	GlobalEvents.loadConversation(&tConfServ_ID, &sIntConv_ID)
+
+EndSub
+
+Sub 'SendFile'
+
+	prcSaveFileChat.Call(&sdtFileChat, &tConfServ_ID, &URL)
+
+	&sdtMaintainInteraction = New()
+	&sdtMaintainInteraction.tInt_Content_TX  = &sdtFileChat.filename
+	&sdtMaintainInteraction.sIntConv_ID	     = &sIntConv_ID
+	&sdtMaintainInteraction.sIntConfServ_ID  = &tConfServ_ID
+	&sdtMaintainInteraction.sIntUsua_ID      = &tUsua_ID
+
+	prcSetInteractionType.Call(&sdtFileChat.filename, &Ck_TypeInt)
+
+	&sdtMaintainInteraction.tInt_Ck_TypeInt = &Ck_TypeInt
+
+	&sdtMaintainInteractionBody = New()
+	&sdtMaintainInteractionBody.tIntBody_Cntd_TX = &sdtMaintainInteraction.tInt_Content_TX
+	&sdtMaintainInteractionBody.tIntBody_URL = &URL
+	&sdtMaintainInteraction.Body.Add(&sdtMaintainInteractionBody)
+
+	prcMaintainAndSendMessage.Call(&sdtMaintainInteraction, &sdtMaintainInteractionResponse)
+
+	ucChat.renderSentFile(&sdtMaintainInteractionResponse.tInt_ID, &sdtFileChat.filename, &Ck_TypeInt, &URL)
+	ucChat.scrollToBottom()
+
+	GlobalEvents.loadConversation(&tConfServ_ID, &sIntConv_ID)
+
+EndSub
+
+Sub 'FillMessages'
+
+	dpGetMessage.Call(&sIntConv_ID, &PageSize_AN, &PageNumber_AN, &sdtMessageAux)
+
+	&sdtMessageAux.Sort('data, id')
+
+	If &PageNumber_AN = 1
+		&sdtMessage = &sdtMessageAux
+	Else
+		For &sdtMessageItemAux in &sdtMessageAux
+			&sdtMessage.Add(&sdtMessageItemAux)
+		EndFor
+
+		&sdtMessage.Sort('data, id')
+	EndIf
+
+EndSub
+
+Sub 'RenderMessages'
+
+	ucChat.OpenAsChatCorner = &OpenAsChatCorner
+	ucChat.Readonly = &ReadOnly_BL
+	ucChat.idchat = &sIntConv_ID.ToString().Trim()
+
+	ucChat.renderChat(&sdtMessage.ToJson(), &sdtChatConfig.ToJson(), &hasMoreResults_BL)
+
+	If &scrollToBottom_BL
+		ucChat.scrollToBottom()
+	EndIf
+
+	If Not &ReadOnly_BL
+		prcSetMessageInteractionRead.Call(&sIntConv_ID, &Success_BL)
+	EndIf
+
+	If &Success_BL
+		GlobalEvents.RefreshConversation(&tConfServ_ID)
+	EndIf
+
+EndSub
+
+Sub 'PreviousPage'
+
+	&PageNumber_AN += 1
+
+	Do 'FillMessages'
+
+	&Valor_MN = (&messagesCount_IN / &PageSize_AN)
+	&ParteInteira_IN = &Valor_MN.Truncate(0)
+	If &Valor_MN > &ParteInteira_IN
+		&totalPagesCount_IN = &ParteInteira_IN + 1
+	Else
+		&totalPagesCount_IN = &ParteInteira_IN
+	EndIf
+
+	If &totalPagesCount_IN >= &PageNumber_AN
+		&hasMoreResults_BL = True
+		&scrollToBottom_BL = False
+
+		Do 'RenderMessages'
+	Else
+		&hasMoreResults_BL = False
+		ucChat.hiddenButtonPagination()
+	EndIf
+
+EndSub
+
+Sub 'GetMessagesCount'
+
+	For Each tInt
+		where sIntConv_ID = &sIntConv_ID
+		&messagesCount_IN += 1
+	EndFOr
+
+EndSub
+
+/*
+	Company	   : ABL SYSTEM CONSULTORIA E INFORMÁTICA
+	Author     : Nicollas Borges
+	Date	   : 30/08/2024
+	Description: chat
+*/
+
+
+
+
+
+
+
+
+
+
+/* =================================== Sub-Rotina =================================== */

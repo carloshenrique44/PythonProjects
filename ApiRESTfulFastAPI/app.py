@@ -45,7 +45,7 @@ def criar_produto(produto: dict):
     return produto
 
 @app.put("/produtos/{produto_id}", tags=["Produtos"])
-def  atualizar_produto(produto_id: int, produto_atualizado: dict):
+def atualizar_produto(produto_id: int, produto_atualizado: dict):
     for produto in Produtos:
         if produto["id"] == produto_id:
             produto.update(produto_atualizado)
